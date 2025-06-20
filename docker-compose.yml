@@ -1,0 +1,28 @@
+services: 
+
+  service-user:
+    build:
+      context: ./AuthenticationService
+      dockerfile: Dockerfile
+    ports: 
+      - "5002:5002"
+    env_file:
+      - .env
+  
+  service-nativoes:
+    build:
+      context: ./Backend-NativoES
+      dockerfile: Dockerfile
+    ports: 
+      - "5000:5000"
+    env_file:
+      - .env
+  
+  service-backendservice:
+    build:
+      context: ./BackendService
+      dockerfile: Dockerfile
+    ports: 
+      - "5001:5001"
+    env_file:
+      - .env
