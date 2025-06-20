@@ -10,15 +10,25 @@ const localizedContentSchema = new Schema(
       type: String,
       required: true,
     },
-    imageUrl: { type: String, required: false },
+    visible: {
+      type: Boolean,
+      default: false,
+    },
+    media: {
+      url: { type: String, required: false },
+      type: { type: String, enum: ["image", "video"], required: false },
+    },
   },
   { _id: false }
 );
 
-const formStudySchema = new mongoose.Schema({
+const characteristicSchema = new mongoose.Schema({
   en: { type: localizedContentSchema, required: false },
   es: { type: localizedContentSchema, required: false },
   fr: { type: localizedContentSchema, required: false },
 });
 
-export const FormStudyModel = mongoose.model("FormStudy", formStudySchema);
+export const CharacteristicModel = mongoose.model(
+  "Characteristic",
+  characteristicSchema
+);

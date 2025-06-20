@@ -25,6 +25,9 @@ export * from './dtos/information/update-information.dt';
 export * from './dtos/form-study/register-form-study.dto';
 export * from './dtos/form-study/update-form-study.dto';
 
+export * from './dtos/characteristic/register-characteristic.dto';
+export * from './dtos/characteristic/update-characteristic.dto';
+
 export * from './dtos/auth/login.dto';
 export * from './dtos/auth/register-user.dto';
 export * from './dtos/auth/update-user.dto';

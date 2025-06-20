@@ -8,7 +8,7 @@ import { FileService } from "./file.service";
 
 export class TeacherService {
   private fileService: FileService = new FileService();
-  
+
   constructor() {}
 
   public async registerTeacher(
@@ -37,13 +37,12 @@ export class TeacherService {
 
     const localizedContent = {
       nombre: nombre ?? "",
-      resumenPrincipal: resumenPrincipal ?? [],
-      resumenSecundario: resumenSecundario ?? [],
-      presentacion: presentacion ?? [],
+      resumenPrincipal: resumenPrincipal ?? "", // Ahora string vacía por defecto
+      resumenSecundario: resumenSecundario ?? "",
+      presentacion: presentacion ?? "",
       cargo,
       fotografia,
     };
-
 
     const teacherData: any = {
       [locale]: localizedContent,
@@ -51,8 +50,8 @@ export class TeacherService {
 
     try {
       const newTeacher = new TeacherModel(teacherData);
-      console.log("📚 Registering new teacher:", newTeacher);
-      
+      console.log("Registering new teacher:", newTeacher);
+
       await newTeacher.save();
       return newTeacher;
     } catch (err) {
@@ -78,7 +77,6 @@ export class TeacherService {
 
       let fotografia: string | undefined;
 
-      // Manejo de foto nueva (si se sube) o mantener la actual
       if (file) {
         const fileName = `${Date.now()}-${file.originalname}`;
         const uploadResult = await this.fileService.uploadFileToS3(
@@ -117,10 +115,10 @@ export class TeacherService {
         throw CustomError.notFound(`Teacher with id "${id}" not found`);
       }
 
-      console.log("✅ Teacher updated successfully:", updated);
+      console.log("Teacher updated successfully:", updated);
       return updated;
     } catch (error) {
-      console.error("❌ Error actualizando teacher:", error);
+      console.error("Error actualizando teacher:", error);
       throw CustomError.internalServer(`${error}`);
     }
   }

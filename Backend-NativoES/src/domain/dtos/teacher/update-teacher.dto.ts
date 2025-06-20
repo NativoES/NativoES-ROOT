@@ -2,9 +2,9 @@ export class UpdateTeacherDto {
   constructor(
     public locale: 'en' | 'es' | 'fr',
     public nombre?: string,
-    public resumenPrincipal?: string[],
-    public resumenSecundario?: string[],
-    public presentacion?: string[],
+    public resumenPrincipal?: string,
+    public resumenSecundario?: string,
+    public presentacion?: string,
     public cargo?: string,
     public fotografia?: string
   ) {}
@@ -24,25 +24,16 @@ export class UpdateTeacherDto {
       return ['Invalid or missing locale'];
     }
 
-    if (
-      resumenPrincipal !== undefined &&
-      (!Array.isArray(resumenPrincipal) || !resumenPrincipal.every(s => typeof s === 'string'))
-    ) {
-      return ['Resumen principal must be an array of strings'];
+    if (resumenPrincipal !== undefined && typeof resumenPrincipal !== 'string') {
+      return ['Resumen principal must be a string'];
     }
 
-    if (
-      resumenSecundario !== undefined &&
-      (!Array.isArray(resumenSecundario) || !resumenSecundario.every(s => typeof s === 'string'))
-    ) {
-      return ['Resumen secundario must be an array of strings'];
+    if (resumenSecundario !== undefined && typeof resumenSecundario !== 'string') {
+      return ['Resumen secundario must be a string'];
     }
 
-    if (
-      presentacion !== undefined &&
-      (!Array.isArray(presentacion) || !presentacion.every(s => typeof s === 'string'))
-    ) {
-      return ['Presentación must be an array of strings'];
+    if (presentacion !== undefined && typeof presentacion !== 'string') {
+      return ['Presentación must be a string'];
     }
 
     return [undefined, new UpdateTeacherDto(

@@ -19,16 +19,8 @@ export class TeachersController {
   };
 
   registerTeacher = (req: Request, res: Response) => {
-    const parsedBody = {
-      locale: req.body.locale,
-      nombre: req.body.nombre,
-      cargo: req.body.cargo,
-      resumenPrincipal: JSON.parse(req.body.resumenPrincipal || "[]"),
-      resumenSecundario: JSON.parse(req.body.resumenSecundario || "[]"),
-      presentacion: JSON.parse(req.body.presentacion || "[]"),
-    };
-
-    const [error, registerDto] = RegisterTeacherDto.create(parsedBody);
+    
+    const [error, registerDto] = RegisterTeacherDto.create(req.body);
     console.log("📚 Registering new teacher:", req.body);
     if (error) return res.status(400).json({ error });
 
@@ -51,26 +43,9 @@ export class TeachersController {
       return res.status(400).json({ error: "Invalid or missing locale" });
     }
 
-    // Deserializar campos que vienen como JSON string
-    function parseArray(field: any): string[] {
-      try {
-        const parsed = JSON.parse(field);
-        return Array.isArray(parsed) ? parsed : [];
-      } catch {
-        return [];
-      }
-    }
-
-    const teacherUpdateData = {
-      ...body,
-      resumenPrincipal: parseArray(body.resumenPrincipal),
-      resumenSecundario: parseArray(body.resumenSecundario),
-      presentacion: parseArray(body.presentacion),
-    };
-
     const file = req.file ? req.file : undefined;
 
-    const [updateError, dto] = UpdateTeacherDto.create(teacherUpdateData);
+    const [updateError, dto] = UpdateTeacherDto.create(body);
     if (updateError) return res.status(400).json({ error: updateError });
 
     this.teacherService

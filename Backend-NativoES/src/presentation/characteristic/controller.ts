@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 import {
   CustomError,
-  RegisterFormStudyDto,
-  UpdateFormStudyDto,
+  RegisterCharacteristicDto,
+  UpdateCharacteristicDto,
 } from "../../domain";
-import { FormStudyService } from "../service";
+import { CharacteristicService } from "../service/characteristic.service";
 
-export class FormStudyController {
-  constructor(private formStudyService: FormStudyService) {}
+export class CharacteristicController {
+  constructor(private characteristicService: CharacteristicService) {}
 
   private handleError = (error: unknown, res: Response) => {
     if (error instanceof CustomError) {
@@ -18,7 +18,7 @@ export class FormStudyController {
     return res.status(500).json({ error: "Internal server error" });
   };
 
-  registerFormStudy = (req: Request, res: Response) => {
+  registerCharacteristic = (req: Request, res: Response) => {
     const file = req.file;
 
     const parsedBody = {
@@ -26,16 +26,16 @@ export class FormStudyController {
       content: req.body.content ? JSON.parse(req.body.content) : undefined,
     };
 
-    const [error, registerDto] = RegisterFormStudyDto.create(parsedBody);
+    const [error, registerDto] = RegisterCharacteristicDto.create(parsedBody);
     if (error) return res.status(400).json({ error });
 
-    this.formStudyService
-      .registerFormStudy(registerDto!, file)
-      .then((formStudy) => res.status(201).json(formStudy))
+    this.characteristicService
+      .registerCharacteristic(registerDto!, file)
+      .then((charac) => res.status(201).json(charac))
       .catch((error) => this.handleError(error, res));
   };
 
-  updateFormStudy = (req: Request, res: Response) => {
+  updateCharacteristic = (req: Request, res: Response) => {
     const { id } = req.params;
     const file = req.file;
 
@@ -44,43 +44,43 @@ export class FormStudyController {
       content: req.body.content ? JSON.parse(req.body.content) : undefined,
     };
 
-    const [updateError, updateDto] = UpdateFormStudyDto.create(parsedBody);
+    const [updateError, updateDto] = UpdateCharacteristicDto.create(parsedBody);
     if (updateError) return res.status(400).json({ error: updateError });
 
     if (!parsedBody.locale || !["en", "es", "fr"].includes(parsedBody.locale)) {
       return res.status(400).json({ error: "Invalid or missing locale" });
     }
 
-    this.formStudyService
-      .updateFormStudy(id, updateDto!, parsedBody.locale, file)
-      .then((updatedFormStudy) => res.json(updatedFormStudy))
+    this.characteristicService
+      .updateCharacteristic(id, updateDto!, parsedBody.locale, file)
+      .then((updatedCharacteristic) => res.json(updatedCharacteristic))
       .catch((error) => this.handleError(error, res));
   };
 
-  getAllFormStudy = (req: Request, res: Response) => {
+  getAllCharasteristics = (req: Request, res: Response) => {
     const { locale } = req.query;
 
-    this.formStudyService
-      .getAllFormStudy(locale as string)
-      .then((formStudies) => res.json(formStudies))
+    this.characteristicService
+      .getAllCharacteristic(locale as string)
+      .then((charasteristics) => res.json(charasteristics))
       .catch((error) => this.handleError(error, res));
   };
 
-  getFormStudyById = (req: Request, res: Response) => {
+  getCharasteristicById = (req: Request, res: Response) => {
     const { id } = req.params;
 
-    this.formStudyService
-      .getFormStudyById(id)
-      .then((formStudy) => res.json(formStudy))
+    this.characteristicService
+      .getCharacteristicById(id)
+      .then((charasteristic) => res.json(charasteristic))
       .catch((error) => this.handleError(error, res));
   };
 
-  deleteFormStudy = (req: Request, res: Response) => {
+  deleteCharacteristic = (req: Request, res: Response) => {
     const { id } = req.params;
 
-    this.formStudyService
-      .deleteFormStudy(id)
-      .then((deletefs) => res.json(deletefs))
+    this.characteristicService
+      .deleteCharacteristic(id)
+      .then((deletech) => res.json(deletech))
       .catch((error) => this.handleError(error, res));
   };
 }

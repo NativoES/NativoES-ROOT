@@ -2,9 +2,9 @@ export class RegisterTeacherDto {
   constructor(
     public locale: 'en' | 'es' | 'fr',
     public nombre: string,
-    public resumenPrincipal: string[],
-    public resumenSecundario: string[],
-    public presentacion: string[],
+    public resumenPrincipal: string,
+    public resumenSecundario: string,
+    public presentacion: string,
     public cargo?: string,
     public fotografia?: string
   ) {}
@@ -24,9 +24,9 @@ export class RegisterTeacherDto {
       return ['Invalid or missing locale'];
     }
     if (!nombre) return ['Nombre is required'];
-    if (!Array.isArray(resumenPrincipal)) return ['Resumen principal must be an array of strings'];
-    if (!Array.isArray(resumenSecundario)) return ['Resumen secundario must be an array of strings'];
-    if (!Array.isArray(presentacion)) return ['Presentación must be an array of strings'];
+    if (!resumenPrincipal) return ['Resumen principal is required'];
+    if (!resumenSecundario) return ['Resumen secundario is required'];
+    if (!presentacion) return ['Presentación is required'];
 
     return [undefined, new RegisterTeacherDto(
       locale,

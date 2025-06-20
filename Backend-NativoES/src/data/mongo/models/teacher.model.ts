@@ -7,15 +7,15 @@ const localizedContentSchema = new Schema(
       required: true,
     },
     resumenPrincipal: { // utilizar generador de inputs
-      type: [String],
+      type: String,
       required: true,
     },
     resumenSecundario: { // utilizar generador de inputs
-      type: [String],
+      type: String,
       required: true,
     },
     presentacion: { // utilizar reactquil
-      type: [String],
+      type: String,
       required: true,
     },
     cargo: {

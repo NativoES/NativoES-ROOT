@@ -7,6 +7,7 @@ import { ReviewRoutes } from "./review/routes";
 import { InformationRoutes } from "./information/routes";
 import { FormStudyRoutes } from "./form-study/routes";
 import { MethodCourseRoutes } from "./method-course/routes";
+import { CharacteristicRoutes } from "./characteristic/routes";
 
 export class AppRoutes {
   static get routes(): Router {
@@ -18,8 +19,9 @@ export class AppRoutes {
     router.use("/api/landing/plan", PlanRoutes.routes);
     router.use("/api/landing/review", ReviewRoutes.routes);
     router.use("/api/landing/information", InformationRoutes.routes);
-    router.use("/api/form-study", FormStudyRoutes.routes);
     router.use("/api/landing/method-course", MethodCourseRoutes.routes);
+    router.use("/api/landing/form-study", FormStudyRoutes.routes);
+    router.use("/api/landing/characteristic", CharacteristicRoutes.routes);
 
     return router;
   }

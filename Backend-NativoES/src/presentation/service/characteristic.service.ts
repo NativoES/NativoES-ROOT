@@ -1,18 +1,18 @@
-import { FormStudyModel } from "../../data";
+import { CharacteristicModel } from "../../data";
 import {
   CustomError,
-  RegisterFormStudyDto,
-  UpdateFormStudyDto,
+  RegisterCharacteristicDto,
+  UpdateCharacteristicDto,
 } from "../../domain";
 import { FileService } from "./file.service";
 
-export class FormStudyService {
+export class CharacteristicService {
   private fileService: FileService = new FileService();
 
   constructor() {}
 
-  public async registerFormStudy(
-    registerDto: RegisterFormStudyDto,
+  public async registerCharacteristic(
+    registerDto: RegisterCharacteristicDto,
     file?: Express.Multer.File
   ) {
     const { locale, content } = registerDto;
@@ -23,17 +23,20 @@ export class FormStudyService {
         file,
         fileName
       );
-      content.imageUrl = uploadResult.Location;
+      content.media = {
+        url: uploadResult.Location,
+        type: "image",
+      };
     }
 
     const initialData = { [locale]: content };
-    const created = await FormStudyModel.create(initialData);
+    const created = await CharacteristicModel.create(initialData);
     return created;
   }
 
-  public async updateFormStudy(
+  public async updateCharacteristic(
     id: string,
-    updateDto: UpdateFormStudyDto,
+    updateDto: UpdateCharacteristicDto,
     locale: string,
     file?: Express.Multer.File
   ) {
@@ -45,60 +48,66 @@ export class FormStudyService {
         file,
         fileName
       );
-      content.imageUrl = uploadResult.Location;
+
+      content.media = {
+        url: uploadResult.Location,
+        type: "image",
+      };
     }
 
-    const updated = await FormStudyModel.findByIdAndUpdate(
+    const updated = await CharacteristicModel.findByIdAndUpdate(
       id,
       { [locale]: content },
       { new: true }
     );
 
     if (!updated) {
-      throw CustomError.notFound("FormStudy not found");
+      throw CustomError.notFound("Characteristic not found");
     }
 
     return updated;
   }
 
-  public async getAllFormStudy(locale?: string) {
+  public async getAllCharacteristic(locale?: string) {
     try {
       if (locale) {
         const projection: { [key: string]: number } = {};
         projection[locale] = 1;
-        const formStudies = await FormStudyModel.find(
+        const characteristics = await CharacteristicModel.find(
           { [locale]: { $exists: true } },
           projection
         );
-        return formStudies;
+        return characteristics;
       }
-      const allFormStudies = await FormStudyModel.find();
-      return allFormStudies;
+      const allCharacteristics = await CharacteristicModel.find();
+      return allCharacteristics;
     } catch (error) {
       throw CustomError.internalServer(`Error fetching FormStudies: ${error}`);
     }
   }
 
-  public async getFormStudyById(id: string) {
+  public async getCharacteristicById(id: string) {
     try {
-      const doc = await FormStudyModel.findById(id);
-      if (!doc) throw CustomError.notFound("FormStudy not found");
+      const doc = await CharacteristicModel.findById(id);
+      if (!doc) throw CustomError.notFound("Characteristic not found");
       return doc;
     } catch (error) {
       throw CustomError.internalServer(
-        `Error fetching FormStudy by ID: ${error}`
+        `Error fetching Characteristic by ID: ${error}`
       );
     }
   }
 
-  public async deleteFormStudy(id: string) {
+  public async deleteCharacteristic(id: string) {
     try {
       console.log("id de eliminacion: ", id);
-      const deleted = await FormStudyModel.findByIdAndDelete(id);
-      if (!deleted) throw CustomError.notFound("FormStudy not found");
+      const deleted = await CharacteristicModel.findByIdAndDelete(id);
+      if (!deleted) throw CustomError.notFound("Characteristic not found");
       return deleted;
     } catch (error) {
-      throw CustomError.internalServer(`Error deleting FormStudy: ${error}`);
+      throw CustomError.internalServer(
+        `Error deleting Characteristic: ${error}`
+      );
     }
   }
 }

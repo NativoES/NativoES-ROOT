@@ -9,3 +9,4 @@ export * from './mongo/models/plans.model';
 export * from './mongo/models/review.model';
 export * from './mongo/models/student.model';
 export * from './mongo/models/teacher.model';
+export * from './mongo/models/characteristics.model';
