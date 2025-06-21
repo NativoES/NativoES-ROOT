@@ -16,13 +16,41 @@ export class PlanController {
   };
 
   register = (req: Request, res: Response) => {
+    
+    if (typeof req.body.typePlan === 'string') {
+      req.body.typePlan = JSON.parse(req.body.typePlan);
+    }
+
     const [error, dto] = RegisterPricePlanDto.create(req.body);
     if (error) return res.status(400).json({ error });
 
+    const file = req.file ? req.file : undefined;
+
     this.planService
-      .register(dto!)
+      .register(dto!, file)
       .then((plan) => res.json(plan))
       .catch((error) => this.handleError(error, res));
+  };
+
+  update = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { locale } = req.body;
+
+    if (typeof req.body.typePlan === 'string') {
+      req.body.typePlan = JSON.parse(req.body.typePlan);
+    }
+    
+    if (!locale || !["en", "es", "fr"].includes(locale)) {
+      return res.status(400).json({ error: "Invalid or missing locale" });
+    }
+
+    const file = req.file ? req.file : undefined;
+
+    const [error, dto] = UpdatePricePlanDto.create(req.body);
+    if (error) return res.status(400).json({ error });
+    this.planService.update(id, locale, dto!, file)
+        .then((plan) => res.json(plan))
+        .catch((error) => this.handleError(error, res)); 
   };
 
   getAll = (_req: Request, res: Response) => {
@@ -33,6 +61,7 @@ export class PlanController {
       .catch((error) => this.handleError(error, res));
   };
 
+
   getById = (req: Request, res: Response) => {
     const { id } = req.params;
     this.planService
@@ -41,21 +70,6 @@ export class PlanController {
       .catch((error) => this.handleError(error, res));
   };
 
-  update = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { locale } = req.body;
-
-    if (!locale || !["en", "es", "fr"].includes(locale)) {
-      return res.status(400).json({ error: "Invalid or missing locale" });
-    }
-
-    const [error, dto] = UpdatePricePlanDto.create(req.body);
-    if (error) return res.status(400).json({ error });
-    this.planService.update(id, locale, dto!)
-        .then((plan) => res.json(plan))
-        .catch((error) => this.handleError(error, res));
-    
-  };
 
   delete = async (req: Request, res: Response) => {
     const { id } = req.params;
