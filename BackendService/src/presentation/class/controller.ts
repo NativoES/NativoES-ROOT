@@ -13,32 +13,23 @@ export class ClassesController {
     return res.status(500).json({ error: "Internal server error" });
   };
 
-  // createClass = (req: Request, res: Response) => {
-  //   const [error, dto] = RegisterClassDto.create(req.body);
-  //   if (error) return res.status(400).json({ error });
-
-  //   const file = req.file ? req.file : undefined;
-
-  //   this.service
-  //     .createClass(dto!, file)
-  //     .then((clase) => res.status(201).json(clase))
-  //     .catch((error) => this.handleError(error, res));
-  // };
-
   createClass = (req: Request, res: Response) => {
-    // Primero clonamos y transformamos el body
     const body = { ...req.body };
 
-    // Si el horario viene como string, lo convertimos en array
     if (typeof body.horario === "string") {
       body.horario = body.horario
-        .replace(/ y /gi, ",") // reemplaza " y " por coma
+        .replace(/ y /gi, ",")
         .split(",")
-        .map((item: string) => item.trim()) // limpia espacios
-        .filter((item: string) => item.length > 0); // quita vacíos
+        .map((item: string) => item.trim())
+        .filter((item: string) => item.length > 0);
     }
 
+    body.isPrivate = body.isPrivate === "true";
+
+    console.log("body refactorizado: ", body);
+
     const [error, dto] = RegisterClassDto.create(body);
+    console.log("body dto: ", dto);
     if (error) return res.status(400).json({ error });
 
     const file = req.file ? req.file : undefined;
@@ -52,6 +43,7 @@ export class ClassesController {
   getAllClasses = (req: Request, res: Response) => {
     const limit = Number(req.query.limit) || 10;
     const page = Number(req.query.page) || 1;
+    const profesorId = req.query.profesorId?.toString();
     const publico =
       req.query.publico === "true"
         ? false
@@ -66,7 +58,7 @@ export class ClassesController {
     }
 
     this.service
-      .getAllClasses(limit, page, publico)
+      .getAllClasses(limit, page, publico, profesorId)
       .then((result) => res.json(result))
       .catch((error) => this.handleError(error, res));
   };
@@ -98,5 +90,20 @@ export class ClassesController {
       .deleteClass(id)
       .then((clase) => res.json(clase))
       .catch((error) => this.handleError(error, res));
+  };
+
+  getClasesByIds = (req: Request, res: Response) => {
+    const { ids } = req.body;
+
+    if (!Array.isArray(ids) || ids.some((id) => typeof id !== "string")) {
+      return res
+        .status(400)
+        .json({ error: "El campo 'ids' debe ser un array de strings" });
+    }
+
+    this.service
+      .getClasesByIds(ids)
+      .then((clases) => res.json({ clases }))
+      .catch((err) => this.handleError(err, res));
   };
 }

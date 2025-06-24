@@ -11,6 +11,8 @@ export class EnrollmentRoutes {
     router.post("/", controller.create as any);
     router.patch("/:id", controller.update as any);
 
+    router.get("/estudiante/:estudianteId/clases", controller.getClasesByEstudent as any);
+
     router.get("/students", controller.getStudentsByClase as any);
 
     router.get("/:id", controller.getById);

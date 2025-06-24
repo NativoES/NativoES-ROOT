@@ -16,6 +16,7 @@ export class ClassesService {
         horario: dto.horario,
         descripcion: dto.descripcion,
         isPrivate: dto.isPrivate,
+        profesorId: dto.profesorId,
         imagen: dto.imagen,
       });
 
@@ -70,7 +71,12 @@ export class ClassesService {
     }
   }
 
-  public async getAllClasses(limit: number, page: number, isPrivate?: boolean) {
+  public async getAllClasses(
+    limit: number,
+    page: number,
+    isPrivate?: boolean,
+    profesorId?: string
+  ) {
     try {
       const filter: any = {};
 
@@ -78,6 +84,10 @@ export class ClassesService {
 
       if (isPrivate !== undefined) {
         filter.isPrivate = isPrivate;
+      }
+
+      if (profesorId) {
+        filter.profesorId = profesorId;
       }
 
       const [data, total] = await Promise.all([
@@ -111,6 +121,16 @@ export class ClassesService {
       return deleted;
     } catch (error) {
       throw CustomError.internalServer(`${error}`);
+    }
+  }
+
+  public async getClasesByIds(ids: string[]) {
+    try {
+      return await ClassesModel.find({ _id: { $in: ids } });
+    } catch (error) {
+      throw CustomError.internalServer(
+        `Error al buscar clases por IDs: ${error}`
+      );
     }
   }
 }

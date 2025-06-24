@@ -1,7 +1,7 @@
 export class UpdateClassDto {
   private constructor(
     public readonly nombreClase?: string,
-    public readonly nivel?: number,
+    public readonly nivel?: string,
     public readonly idioma?: 'Español' | 'Inglés' | 'Francés' | 'Ruso',
     public readonly horario?: string[],
     public readonly isPrivate?: boolean,
@@ -17,7 +17,7 @@ export class UpdateClassDto {
     const { nombreClase, nivel, idioma, horario, isPrivate, descripcion, imagen } = object;
 
     if (nombreClase !== undefined && typeof nombreClase !== 'string') return ['"nombreClase" debe ser string'];
-    if (nivel !== undefined && typeof nivel !== 'number') return ['"nivel" debe ser número'];
+    if (nivel !== undefined && typeof nivel !== 'string') return ['"nivel" debe ser string'];
     if (idioma !== undefined && !['Español', 'Inglés', 'Francés', 'Ruso'].includes(idioma)) return ['"idioma" inválido'];
     if (horario !== undefined) {
       if (!Array.isArray(horario) || horario.some(h => typeof h !== 'string')) {

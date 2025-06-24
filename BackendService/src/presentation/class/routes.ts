@@ -12,6 +12,7 @@ export class ClassRoutes {
         const classController = new ClassesController(classService);
     
         router.post("/", uploadSingleFile, classController.createClass as any);
+        router.post("/by-ids", classController.getClasesByIds as any);
         router.patch("/:id", uploadSingleFile, classController.updateClass as any);
         router.get("/", classController.getAllClasses as any);
         router.get("/:id", classController.getClassById);

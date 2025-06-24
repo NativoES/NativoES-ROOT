@@ -7,7 +7,7 @@ const classesSchema = new mongoose.Schema({
     trim: true,
   },
   nivel: {
-    type: Number,
+    type: String,
   },
   idioma: {
     type: String,
@@ -30,6 +30,10 @@ const classesSchema = new mongoose.Schema({
   imagen: {
     type: String,
     trim: true,
+  },
+  profesorId: {
+    type: String,
+    required: true,
   },
   createdAt: { type: Date, default: Date.now }
 });

@@ -26,7 +26,9 @@ export class AppRoutes {
     router.use("/api/system/ejercicios", NativoesRoutes.routes);
     
     router.use("/api/system/completar-texto", CompletarTextoRoutes.routes);
+
     router.use("/api/system/classes", ClassRoutes.routes);
+    
     router.use("/api/system/nota-texto", NotaTextoRoutes.routes);
     router.use("/api/system/nota", NotaRoutes.routes);
     router.use("/api/system/formar-palabra", FormarPalabrasRoutes.routes);

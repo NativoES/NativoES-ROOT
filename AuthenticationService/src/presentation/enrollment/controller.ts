@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import {
   CustomError,
   RegisterEnrollmentDto,
-  UpdateEnrollmentDto
+  UpdateEnrollmentDto,
 } from "../../domain";
 import { EnrollmentService } from "../services/enrollment.service";
 
@@ -76,8 +76,22 @@ export class EnrollmentController {
 
     this.service
       .getPaginatedStudentsByClase(claseId, page, limit)
-      .then(result => res.json(result))
-      .catch(error => this.handleError(error, res));
+      .then((result) => res.json(result))
+      .catch((error) => this.handleError(error, res));
   };
 
+  getClasesByEstudent = async (req: Request, res: Response) => {
+    const { estudianteId } = req.params;
+
+    if (!estudianteId) {
+      return res
+        .status(400)
+        .json({ error: "Debe proporcionar el ID del estudiante" });
+    }
+
+    this.service
+      .getClasesByEstudent(estudianteId)
+      .then((clases) => res.json({ clases }))
+      .catch((error) => this.handleError(error, res));
+  };
 }

@@ -1,9 +1,11 @@
+import axios from "axios";
 import { EnrollmentModel } from "../../data";
 import {
   CustomError,
   RegisterEnrollmentDto,
-  UpdateEnrollmentDto
+  UpdateEnrollmentDto,
 } from "../../domain";
+import { envs } from "../../config/envs";
 
 export class EnrollmentService {
   constructor() {}
@@ -12,11 +14,13 @@ export class EnrollmentService {
     try {
       const exists = await EnrollmentModel.findOne({
         estudianteId: dto.estudianteId,
-        claseId: dto.claseId
+        claseId: dto.claseId,
       });
 
       if (exists) {
-        throw CustomError.badRequest("El estudiante ya está inscrito en esta clase.");
+        throw CustomError.badRequest(
+          "El estudiante ya está inscrito en esta clase."
+        );
       }
 
       const enrollment = new EnrollmentModel(dto);
@@ -31,7 +35,7 @@ export class EnrollmentService {
     try {
       const updated = await EnrollmentModel.findByIdAndUpdate(id, dto, {
         new: true,
-        runValidators: true
+        runValidators: true,
       });
 
       if (!updated) throw CustomError.notFound("Inscripción no encontrada");
@@ -44,7 +48,10 @@ export class EnrollmentService {
 
   public async getAllByClase(claseId: string) {
     try {
-      return await EnrollmentModel.find({ claseId }).populate("estudianteId", "-password");
+      return await EnrollmentModel.find({ claseId }).populate(
+        "estudianteId",
+        "-password"
+      );
     } catch (error) {
       throw CustomError.internalServer(`${error}`);
     }
@@ -52,7 +59,10 @@ export class EnrollmentService {
 
   public async getById(id: string) {
     try {
-      const enrollment = await EnrollmentModel.findById(id).populate("estudianteId", "-password");
+      const enrollment = await EnrollmentModel.findById(id).populate(
+        "estudianteId",
+        "-password"
+      );
       if (!enrollment) throw CustomError.notFound("Inscripción no encontrada");
       return enrollment;
     } catch (error) {
@@ -70,7 +80,11 @@ export class EnrollmentService {
     }
   }
 
-  public async getPaginatedStudentsByClase(claseId: string, page = 1, limit = 10) {
+  public async getPaginatedStudentsByClase(
+    claseId: string,
+    page = 1,
+    limit = 10
+  ) {
     try {
       const skip = (page - 1) * limit;
 
@@ -82,7 +96,7 @@ export class EnrollmentService {
           .populate("estudianteId", "-password"),
       ]);
 
-      const students = enrollments.map(e => e.estudianteId); // Solo los estudiantes
+      const students = enrollments.map((e) => e.estudianteId); // Solo los estudiantes
 
       return {
         total,
@@ -95,4 +109,26 @@ export class EnrollmentService {
     }
   }
 
+  public async getClasesByEstudent(estudianteId: string) {
+    try {
+      const inscripciones = await EnrollmentModel.find({ estudianteId });
+
+      const claseIds = inscripciones.map((i) => i.claseId);
+
+      if (claseIds.length === 0) return [];
+
+      const { data } = await axios.post(
+        `${envs.API_CLASS_SERVICE}/classes/by-ids`,
+        {
+          ids: claseIds,
+        }
+      );
+
+      return data.clases || [];
+    } catch (error) {
+      throw CustomError.internalServer(
+        `Error al obtener clases del microservicio: ${error}`
+      );
+    }
+  }
 }

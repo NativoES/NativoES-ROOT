@@ -10,5 +10,7 @@ export const envs = {
   AWS_SECRET_ACCESS_KEY: get("AWS_SECRET_ACCESS_KEY").required().asString(),
   AWS_REGION: get("AWS_REGION").required().asString(),
   UNIMTX_ACCESS_KEY_ID: get("UNIMTX_ACCESS_KEY_ID").required().asString(),
-  JWT_SEED: get("JWT_SECRET").required().asString()
+  JWT_SEED: get("JWT_SECRET").required().asString(),
+  // Servicios
+  API_CLASS_SERVICE: get("API_CLASS_SERVICE").required().asString()
 }
